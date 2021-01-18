@@ -3,6 +3,7 @@ const config = require('./config')
 const router = require("./routes")
 const bodyParser = require('koa-bodyparser')
 const parameter = require('koa-parameter')
+const cors = require('koa2-cors')
 
 const app = new Koa()
 
@@ -10,6 +11,8 @@ app.use(parameter(app))
 
 // 不这样用会报错
 app.use(bodyParser())
+
+app.use(cors())
 
 app.use(async (ctx, next) => {
   try {
