@@ -14,6 +14,10 @@ class UserModels {
     let _sql = `UPDATE blog SET ? WHERE id = ${id}`
     return await query(_sql, values)
   }
+  async detail(id) {
+    let _sql = `SELECT * FROM blog WHERE id = ${id}`
+    return await query(_sql)
+  }
 }
 
 module.exports = new UserModels()

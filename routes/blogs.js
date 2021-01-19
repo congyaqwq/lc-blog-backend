@@ -1,12 +1,13 @@
 const Router = require('koa-router')
 const router = new Router({ prefix: '/blogs' })
-const { blogList, blogAdd, blogUpdate } = require('../controllers/blogs')
+const { blogList, blogAdd, blogUpdate, blogDetail } = require('../controllers/blogs')
 
 
 router.all('/', () => {
   console.log('success')
 })
 router.get('/list', blogList)
-router.get('/add', blogAdd)
+router.post('/add', blogAdd)
+router.get('/detail/:id', blogDetail)
 
 module.exports = router
