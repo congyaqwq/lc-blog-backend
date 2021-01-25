@@ -4,6 +4,7 @@ const router = require("./routes")
 const bodyParser = require('koa-bodyparser')
 const parameter = require('koa-parameter')
 const cors = require('koa2-cors')
+const routerResponse = require('./middleware/routerResponse')
 
 const app = new Koa()
 
@@ -13,6 +14,8 @@ app.use(parameter(app))
 app.use(bodyParser())
 
 app.use(cors())
+
+// app.use(routerResponse())
 
 app.use(async (ctx, next) => {
   try {

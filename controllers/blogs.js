@@ -25,6 +25,7 @@ exports.blogUpdate = async (ctx) => {
 
 exports.blogDetail = async (ctx) => {
   const { id } = ctx.params
-  ctx.body = await detail(id)
+  const data = await detail(id)
+  ctx.body = data[0]
 }
 

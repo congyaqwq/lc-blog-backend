@@ -15,7 +15,7 @@ class UserModels {
     return await query(_sql, values)
   }
   async detail(id) {
-    let _sql = `SELECT * FROM blog WHERE id = ${id}`
+    let _sql = `SELECT * FROM blog WHERE id = ${id} LIMIT 1`
     return await query(_sql)
   }
 }
