@@ -1,8 +1,13 @@
 const jwt = require("jsonwebtoken")
-const { list, add, update, detail, remove } = require('../model/blogs')
+const { total, list, add, update, detail, remove } = require('../model/blogs')
 
 exports.blogList = async (ctx) => {
-  ctx.body = await list(ctx.query)
+  const countObj = await total()
+  const blogList = await list(ctx.query)
+  ctx.body = {
+    total: countObj[0].count,
+    list: blogList
+  }
 }
 
 exports.blogAdd = async (ctx) => {

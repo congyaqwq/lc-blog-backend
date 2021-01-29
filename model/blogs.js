@@ -1,6 +1,10 @@
 const query = require('../mysql')
 
 class UserModels {
+  async total() {
+    let _sql = `SELECT count(*) AS count FROM blog`
+    return await query(_sql)
+  }
   async add(values) {
     let _sql = `INSERT INTO blog SET ?;`
     return await query(_sql, values)
