@@ -1,6 +1,6 @@
 const query = require('../mysql')
 
-class UserModels {
+class BlogModels {
   async total() {
     let _sql = `SELECT count(*) AS count FROM blog`
     return await query(_sql)
@@ -14,8 +14,10 @@ class UserModels {
     return await query(_sql, values)
   }
   async update(values, id) {
+    const { title, content } = values
+    const val = { title, content }
     let _sql = `UPDATE blog SET ? WHERE id = ${id}`
-    return await query(_sql, values)
+    return await query(_sql, val)
   }
   async detail(id) {
     let _sql = `SELECT * FROM blog WHERE id = ${id} LIMIT 1`
@@ -27,4 +29,4 @@ class UserModels {
   }
 }
 
-module.exports = new UserModels()
+module.exports = new BlogModels()
