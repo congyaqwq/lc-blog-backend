@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken")
 const { total, list, add, update, detail, remove } = require('../model/blogs')
 
 exports.blogList = async (ctx) => {
