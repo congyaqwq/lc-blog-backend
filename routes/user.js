@@ -9,5 +9,5 @@ const secret = fs.readFileSync(process.cwd() + '/secret/private.pem')
 const auth = jwt({ secret })
 
 router.post('/login', userLogin)
-router.get('/detail', auth, userDetail)
+router.get('/detail', userDetail)
 module.exports = router
