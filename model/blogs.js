@@ -1,4 +1,6 @@
 const query = require('../mysql')
+const { thumbList } = require('./thumbs')
+const { getIp } = require('../middleware/ip')
 
 class BlogModels {
   async total(values) {
@@ -13,13 +15,19 @@ class BlogModels {
     let _sql = `INSERT INTO blog SET ?;`
     return await query(_sql, values)
   }
-  async list({ page = 1, per_page = 12, ...values }) {
+  async list({ page = 1, per_page = 12, ...values }, request) {
     const { keyword = "" } = values
     let _sql =
       !keyword
         ? `SELECT * FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
         : `SELECT * FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-    return await query(_sql)
+    let res = await query(_sql)
+    const user_ip = getIp(request)
+    const ipList = await thumbList(user_ip)
+    res.forEach(it => {
+      it.is_thumb = Number(ipList.includes(it.id))
+    })
+    return res
   }
   async update(values, id) {
     const { title, content } = values

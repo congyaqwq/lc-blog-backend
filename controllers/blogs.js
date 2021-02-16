@@ -2,7 +2,7 @@ const { total, list, add, update, detail, remove } = require('../model/blogs')
 
 exports.blogList = async (ctx) => {
   const countObj = await total(ctx.query)
-  const blogList = await list(ctx.query)
+  const blogList = await list(ctx.query, ctx.request)
   ctx.body = {
     total: countObj[0].count,
     list: blogList
