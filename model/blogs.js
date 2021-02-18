@@ -34,9 +34,14 @@ class BlogModels {
     let _sql = `UPDATE blog SET ? WHERE id = ${id}`
     return await query(_sql, val)
   }
-  async detail(id) {
+  async detail(id, user_id) {
     let _sql = `SELECT * FROM blog WHERE id = ${id} LIMIT 1`
-    return await query(_sql)
+    const res = await query(_sql)
+    let hasThumbList = await thumbList(user_id)
+    hasThumbList = hasThumbList.map(it => it.blog_id)
+    const data = res[0] || {}
+    data.is_thumb = Number(hasThumbList.includes(id))
+    return data
   }
   async remove(id) {
     let _sql = `DELETE FROM blog WHERE ?`

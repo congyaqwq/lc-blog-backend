@@ -26,12 +26,17 @@ exports.blogUpdate = async (ctx) => {
 
 exports.blogDetail = async (ctx) => {
   let { authorization: token } = ctx.request.header
-  const { id } = ctx.params
+  let { id } = ctx.params
+  id = Number(id)
+  const { user_id } = ctx.query
   if (!token) {
     await addViews(id)
   }
-  const data = await detail(id)
-  ctx.body = data[0]
+  const data = await detail(id, user_id)
+  if (!data) {
+    ctx.throw('404', '未找到该条数据')
+  }
+  ctx.body = data
 }
 
 exports.blogRemove = async (ctx) => {
