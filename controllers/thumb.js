@@ -1,11 +1,16 @@
-const { thumb, addThumb } = require('../model/thumbs')
-const { getIp } = require('../middleware/ip')
+const { thumb, addThumb, cancelThumb, subThumb } = require('../model/thumbs')
 
 exports.thumbBlog = async (ctx) => {
-  const user_ip = getIp(ctx.request)
-  const res = await thumb({ ...ctx.request.body, user_ip })
+  const res = await thumb({ ...ctx.request.body })
   const { blog_id } = ctx.request.body
   await addThumb(blog_id)
+  ctx.body = res
+}
+
+exports.cancelThumb = async (ctx) => {
+  const res = await cancelThumb({ ...ctx.request.body })
+  const { blog_id } = ctx.request.body
+  await subThumb(blog_id)
   ctx.body = res
 }
 

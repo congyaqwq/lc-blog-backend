@@ -1,8 +1,8 @@
-const { total, list, add, update, detail, remove } = require('../model/blogs')
+const { total, list, add, update, detail, remove, addViews } = require('../model/blogs')
 
 exports.blogList = async (ctx) => {
   const countObj = await total(ctx.query)
-  const blogList = await list(ctx.query, ctx.request)
+  const blogList = await list(ctx.query)
   ctx.body = {
     total: countObj[0].count,
     list: blogList
@@ -25,7 +25,11 @@ exports.blogUpdate = async (ctx) => {
 }
 
 exports.blogDetail = async (ctx) => {
+  let { authorization: token } = ctx.request.header
   const { id } = ctx.params
+  if (!token) {
+    await addViews(id)
+  }
   const data = await detail(id)
   ctx.body = data[0]
 }

@@ -1,6 +1,5 @@
 const query = require('../mysql')
 const { thumbList } = require('./thumbs')
-const { getIp } = require('../middleware/ip')
 
 class BlogModels {
   async total(values) {
@@ -15,17 +14,17 @@ class BlogModels {
     let _sql = `INSERT INTO blog SET ?;`
     return await query(_sql, values)
   }
-  async list({ page = 1, per_page = 12, ...values }, request) {
-    const { keyword = "" } = values
+  async list({ page = 1, per_page = 12, ...values }) {
+    const { keyword = "", user_id } = values
     let _sql =
       !keyword
         ? `SELECT * FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
         : `SELECT * FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
-    const user_ip = getIp(request)
-    const ipList = await thumbList(user_ip)
+    let hasThumbList = await thumbList(user_id)
+    hasThumbList = hasThumbList.map(it => it.blog_id)
     res.forEach(it => {
-      it.is_thumb = Number(ipList.includes(it.id))
+      it.is_thumb = Number(hasThumbList.includes(it.id))
     })
     return res
   }
@@ -41,6 +40,10 @@ class BlogModels {
   }
   async remove(id) {
     let _sql = `DELETE FROM blog WHERE ?`
+    return await query(_sql, { id })
+  }
+  async addViews(id) {
+    const _sql = `UPDATE blog SET views=views+1 WHERE ?`
     return await query(_sql, { id })
   }
 }

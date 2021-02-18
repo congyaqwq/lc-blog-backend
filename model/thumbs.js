@@ -1,13 +1,16 @@
 const query = require('../mysql')
 
 class BlogModels {
-  async thumb(values) {
+  async thumb({ blog_id, user_id }) {
     let _sql = `INSERT INTO thumb SET ?;`
-
-    return await query(_sql, values)
+    return await query(_sql, { blog_id, user_id })
   }
-  async thumbList(ip) {
-    let _sql = `SELECT blog_id FROM thumb WHERE user_ip = '${ip}'`
+  async cancelThumb({ blog_id, user_id }) {
+    let _sql = `DELETE FROM thumb WHERE blog_id  = ${blog_id} AND user_id = '${user_id}';`
+    return await query(_sql)
+  }
+  async thumbList(user_id) {
+    let _sql = `SELECT blog_id FROM thumb WHERE user_id = '${user_id}'`
     return await query(_sql)
   }
   async addThumb(id) {
