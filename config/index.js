@@ -1,3 +1,5 @@
+const host = process.env.NODE_ENV === 'production' ? '172.22.22.31' : '127.0.0.1'
+
 const config = {
   port: 3000,
   database: {
@@ -5,7 +7,7 @@ const config = {
     USERNAME: 'root',
     PASSWORD: 'mysql',
     PORT: '3306',
-    HOST: '127.0.0.1'
+    HOST
   }
 }
 

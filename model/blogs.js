@@ -18,8 +18,8 @@ class BlogModels {
     const { keyword = "", user_id } = values
     let _sql =
       !keyword
-        ? `SELECT * FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-        : `SELECT * FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+        ? `SELECT created_time,title,thumbs,views,SUBSTR(content,1,20) as content FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+        : `SELECT created_time,title,thumbs,views,SUBSTR(content,1,20) as content FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
     let hasThumbList = await thumbList(user_id)
     hasThumbList = hasThumbList.map(it => it.blog_id)
