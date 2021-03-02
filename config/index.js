@@ -1,4 +1,4 @@
-const host = process.env.NODE_ENV === 'production' ? '172.22.22.31' : '127.0.0.1'
+const HOST = process.env.NODE_ENV === 'production' ? '172.22.22.31' : '127.0.0.1'
 
 const config = {
   port: 3000,
