@@ -4,7 +4,7 @@ const config = {
   database: {
     DATABASE: 'lc_blog',
     USERNAME: 'root',
-    PASSWORD: 'mysql',
+    PASSWORD: 'Lc0805abcdef',
     PORT: '3306',
     HOST
   }
