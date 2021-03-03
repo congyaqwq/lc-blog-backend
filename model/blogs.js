@@ -1,5 +1,6 @@
 const query = require('../mysql')
 const { thumbList } = require('./thumbs')
+const { listById } = require('./tags')
 
 class BlogModels {
   async total(values) {
@@ -18,19 +19,22 @@ class BlogModels {
     const { keyword = "", user_id } = values
     let _sql =
       !keyword
-        ? `SELECT created_time,title,thumbs,views,SUBSTR(content,1,20) as content FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-        : `SELECT created_time,title,thumbs,views,SUBSTR(content,1,20) as content FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+        ? `SELECT id,created_time,title,thumbs,views,SUBSTR(content,1,100) as content,tags,sort FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+        : `SELECT id,created_time,title,thumbs,views,SUBSTR(content,1,100) as content,tags,sort FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
     let hasThumbList = await thumbList(user_id)
     hasThumbList = hasThumbList.map(it => it.blog_id)
-    res.forEach(it => {
-      it.is_thumb = Number(hasThumbList.includes(it.id))
-    })
-    return res
+    return await Promise.all(res.map(async it => {
+      return {
+        ...it,
+        is_thumb: Number(hasThumbList.includes(it.id)),
+        tags: it.tags ? await listById(it.tags) : ''
+      }
+    }))
   }
   async update(values, id) {
-    const { title, content } = values
-    const val = { title, content }
+    const { title, content, tags } = values
+    const val = { title, content, tags }
     let _sql = `UPDATE blog SET ? WHERE id = ${id}`
     return await query(_sql, val)
   }
@@ -41,6 +45,7 @@ class BlogModels {
     hasThumbList = hasThumbList.map(it => it.blog_id)
     const data = res[0] || {}
     data.is_thumb = Number(hasThumbList.includes(id))
+    data.tags = await listById(data.tags)
     return data
   }
   async remove(id) {
