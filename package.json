@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "set NODE_ENV=dev && npm i && nodemon",
-    "pro": "set NODE_ENV=production && npm i && nodemon"
+    "dev": "npm i && NODE_ENV=devlopment nodemon",
+    "pro": "npm i && NODE_ENV=production node index"
   },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
