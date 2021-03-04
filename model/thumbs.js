@@ -6,7 +6,7 @@ class BlogModels {
     return await query(_sql, { blog_id, user_id })
   }
   async cancelThumb({ blog_id, user_id }) {
-    let _sql = `DELETE FROM thumb WHERE blog_id  = ${blog_id} AND user_id = '${user_id}';`
+    let _sql = `DELETE FROM thumb WHERE blog_id = ${blog_id} AND user_id = '${user_id}';`
     return await query(_sql)
   }
   async thumbList(user_id) {

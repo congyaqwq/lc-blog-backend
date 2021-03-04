@@ -16,11 +16,8 @@ class BlogModels {
     return await query(_sql, values)
   }
   async list({ page = 1, per_page = 12, ...values }) {
-    const { keyword = "", user_id } = values
-    let _sql =
-      !keyword
-        ? `SELECT id,created_time,title,thumbs,views,SUBSTR(content,1,100) as content,tags,sort FROM blog LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-        : `SELECT id,created_time,title,thumbs,views,SUBSTR(content,1,100) as content,tags,sort FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+    const { keyword = "", user_id, tags } = values
+    let _sql = `SELECT id,created_time,title,thumbs,views,tags,sort,SUBSTR(content,1,100) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''} LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
     let hasThumbList = await thumbList(user_id)
     hasThumbList = hasThumbList.map(it => it.blog_id)
