@@ -16,6 +16,7 @@ function execute(cmd) {
 module.exports = async (ctx) => {
   execute('git pull origin main')
   ctx.body = {
+    code: 200,
     msg: '执行成功'
   }
 }
