@@ -39,7 +39,7 @@ class TagModels {
     return res
   }
   async remove(id) {
-    let _sql = `DELETE FROM res WHERE ?`
+    let _sql = `DELETE FROM tags WHERE ?`
     return await query(_sql, { id })
   }
 }
