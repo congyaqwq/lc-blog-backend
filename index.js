@@ -13,9 +13,8 @@ app.use(parameter(app))
 // 不这样用会报错
 app.use(bodyParser())
 
-const origin = process.env.NODE_ENV === 'production' ? '39.103.137.10' : '*'
 app.use(cors({
-  origin
+  origin: config.origin
 }))
 
 // app.use(routerResponse())

@@ -1,5 +1,6 @@
 const HOST = process.env.NODE_ENV === 'production' ? '172.22.22.31' : '127.0.0.1'
 const PASSWORD = process.env.NODE_ENV === 'production' ? 'Lc0805abcdef' : 'mysql'
+const ORIGIN = process.env.NODE_ENV === 'production' ? 'http://39.103.137.10' : '*'
 const config = {
   port: 3000,
   database: {
@@ -8,7 +9,8 @@ const config = {
     PASSWORD,
     PORT: '3306',
     HOST
-  }
+  },
+  origin: ORIGIN
 }
 
 module.exports = config
