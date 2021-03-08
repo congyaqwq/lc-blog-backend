@@ -1,8 +1,13 @@
-const { total, list, add, update, detail, remove, addViews } = require('../model/blogs')
+const { total, list, orderList, add, update, detail, remove, addViews } = require('../model/blogs')
 
 exports.blogList = async (ctx) => {
+  let blogList = []
+  if (ctx.request.url.includes('frontlist')) {
+    blogList = await orderList(ctx.query)
+  } else {
+    blogList = await list(ctx.query)
+  }
   const countObj = await total(ctx.query)
-  const blogList = await list(ctx.query)
   ctx.body = {
     total: countObj[0].count,
     list: blogList

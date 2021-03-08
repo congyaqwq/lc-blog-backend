@@ -13,7 +13,10 @@ app.use(parameter(app))
 // 不这样用会报错
 app.use(bodyParser())
 
-app.use(cors())
+const origin = process.env.NODE_ENV === 'production' ? '39.103.137.10' : '*'
+app.use(cors({
+  origin
+}))
 
 // app.use(routerResponse())
 
