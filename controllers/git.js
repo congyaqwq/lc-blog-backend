@@ -16,6 +16,7 @@ function execute(cmd) {
 module.exports = async (ctx) => {
   execute('git pull origin main')
   execute('docker-compose restart')
+  console.log('exec: git pull')
   ctx.body = {
     code: 200,
     msg: '执行成功'
