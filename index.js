@@ -14,7 +14,7 @@ app.use(parameter(app))
 app.use(bodyParser())
 
 app.use(cors({
-  origin: config.origin
+  origin: '*'
 }))
 
 // app.use(routerResponse())
