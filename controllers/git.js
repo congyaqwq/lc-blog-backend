@@ -15,7 +15,7 @@ function execute(cmd) {
 
 module.exports = async (ctx) => {
   execute('git pull origin main')
-  execute('docker-compose restart')
+  execute('docker restart koa-node')
   console.log('exec: git pull')
   ctx.body = {
     code: 200,
