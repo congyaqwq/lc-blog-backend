@@ -1,15 +1,16 @@
 const Router = require('koa-router')
 const jwt = require("koa-jwt")
 const fs = require('fs')
-const router = new Router({ prefix: '/blogs' })
+const router = new Router({ prefix: '/api/blogs' })
 const { blogList, frontBlogList, blogAdd, blogUpdate, blogDetail, blogRemove } = require('../controllers/blogs')
 
 const secret = fs.readFileSync(process.cwd() + '/secret/private.pem')
 
 const auth = jwt({ secret })
 
-router.all('/', () => {
+router.all('/', (ctx) => {
   console.log('success')
+  ctx.body = { message: 'success' }
 })
 router.get('/list', blogList)
 router.get('/frontlist', blogList)
