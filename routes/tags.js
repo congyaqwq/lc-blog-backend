@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const jwt = require("koa-jwt")
 const fs = require('fs')
-const router = new Router({ prefix: '/api/tags' })
+const router = new Router({ prefix: '/tags' })
 const { tagsList, tagsAdd, tagsUpdate, tagsDetail, tagsRemove } = require('../controllers/tags')
 
 const secret = fs.readFileSync(process.cwd() + '/secret/private.pem')
