@@ -13,7 +13,7 @@ router.all('/', (ctx) => {
   ctx.body = { message: 'success' }
 })
 router.get('/list', blogList)
-router.get('/frontlist', blogList)
+router.get('/frontlist', frontBlogList)
 router.post('/add', auth, blogAdd)
 router.put('/update/:id', auth, blogUpdate)
 router.get('/detail/:id', blogDetail)
