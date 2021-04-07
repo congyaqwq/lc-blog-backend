@@ -2,19 +2,13 @@ const { total, list, orderList, add, update, detail, remove, addViews } = requir
 
 exports.blogList = async (ctx) => {
   let blogList = []
+  const user_id = ctx.cookies.get('uid')
   if (ctx.request.url.includes('frontlist')) {
     blogList = await orderList(ctx.query)
   } else {
     blogList = await list(ctx.query)
   }
-  const countObj = await total({ ...ctx.query })
-  if (!ctx.cookies.get('user_id')) {
-    const uid = ~~(Math.random() * 100000)
-    console.log(uid, 'uid')
-    ctx.cookies.set("uid", uid, {
-      maxAge: 60 * 1000 * 60 * 24 * 7 //设置过期时间
-    })
-  }
+  const countObj = await total({ ...ctx.query, user_id })
   ctx.body = {
     total: countObj[0].count,
     list: blogList
@@ -41,7 +35,7 @@ exports.blogDetail = async (ctx) => {
   let { authorization: token } = ctx.request.header
   let { id } = ctx.params
   id = Number(id)
-  const user_id = ctx.cookies.get('user_id')
+  const user_id = ctx.cookies.get('uid')
   console.log(user_id, 1)
   if (!token) {
     await addViews(id)
