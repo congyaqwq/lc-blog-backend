@@ -3,12 +3,13 @@ const { total, list, orderList, add, update, detail, remove, addViews } = requir
 exports.blogList = async (ctx) => {
   let blogList = []
   const user_id = ctx.cookies.get('uid')
+  console.log(user_id, 1)
   if (ctx.request.url.includes('frontlist')) {
-    blogList = await orderList(ctx.query)
+    blogList = await orderList({ ...ctx.query, user_id })
   } else {
-    blogList = await list(ctx.query)
+    blogList = await list({ ...ctx.query, user_id })
   }
-  const countObj = await total({ ...ctx.query, user_id })
+  const countObj = await total({ ...ctx.query })
   ctx.body = {
     total: countObj[0].count,
     list: blogList
@@ -36,7 +37,6 @@ exports.blogDetail = async (ctx) => {
   let { id } = ctx.params
   id = Number(id)
   const user_id = ctx.cookies.get('uid')
-  console.log(user_id, 1)
   if (!token) {
     await addViews(id)
   }
