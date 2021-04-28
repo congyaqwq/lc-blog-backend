@@ -3,7 +3,6 @@ const { total, list, orderList, add, update, detail, remove, addViews } = requir
 exports.blogList = async (ctx) => {
   let blogList = []
   const user_id = ctx.cookies.get('uid')
-  console.log(user_id, 1)
   if (ctx.request.url.includes('frontlist')) {
     blogList = await orderList({ ...ctx.query, user_id })
   } else {
