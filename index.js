@@ -13,9 +13,9 @@ app.use(parameter(app))
 // 不这样用会报错
 app.use(bodyParser())
 
-// app.use(cors({
-//   origin: 'localhost:4000'
-// }))
+app.use(cors({
+  origin: 'localhost:4000'
+}))
 app.use(async (ctx, next) => {
   // ctx.set('Access-Control-Allow-Origin', ctx.headers.origin)
   ctx.set('Access-Control-Allow-Headers', 'content-type')
