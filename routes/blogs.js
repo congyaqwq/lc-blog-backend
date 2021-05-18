@@ -10,7 +10,7 @@ const auth = jwt({ secret })
 
 router.all('/', (ctx) => {
   console.log('success')
-  ctx.body = { message: 'success' }
+  ctx.body = "var jsonp = 'hello world'"
 })
 router.get('/list', blogList)
 router.get('/frontlist', blogList)
