@@ -1,14 +1,16 @@
+const knex = require('../mysql')
 const query = require('../mysql')
 
 class UserModels {
   async login(values) {
     const { username, password: passwd } = values
-    const _sql = `SELECT * FROM user WHERE username = ? AND passwd = ?`
-    return await query(_sql, [username, passwd])
+    return knex('user').where({
+      username,
+      passwd
+    })
   }
-  async userInfo(values) {
-    const _sql = `SELECT * FROM user WHERE ?`
-    return await query(_sql, values)
+  async userInfo(id) {
+    return knex('user').where({ id })
   }
 }
 

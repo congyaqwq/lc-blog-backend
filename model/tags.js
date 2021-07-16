@@ -1,4 +1,4 @@
-const query = require('../mysql')
+const knex = require('../mysql')
 
 class TagModels {
   async total(values) {
@@ -7,7 +7,7 @@ class TagModels {
       !keyword
         ? `SELECT count(*) AS count FROM tags;`
         : `SELECT count(*) AS count FROM tags WHERE name LIKE '%${keyword}%';`
-    return await query(_sql)
+    return await query.raw(_sql)
   }
   async add(values) {
     let _sql = `INSERT INTO tags SET ?;`
@@ -15,8 +15,7 @@ class TagModels {
   }
   async listById(ids) {
     if (!ids || !ids.length) return
-    let _sql = `SELECT id,name FROM tags WHERE id in (${ids})`
-    return await query(_sql)
+    return knex.select('id', 'name').from('tags').whereIn('id', ids.split(','))
   }
   async list({ page = 1, per_page = 12, ...values }) {
     const { keyword = "" } = values
