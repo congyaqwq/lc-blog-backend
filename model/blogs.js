@@ -17,7 +17,7 @@ class BlogModels {
   }
   async list({ page = 1, per_page = 12, ...values }) {
     const { keyword = "", user_id, tags } = values
-    let _sql = `SELECT id,created_time,title,thumbs,views,tags,sort,SUBSTR(content,1,100) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''} LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+    let _sql = `SELECT id,created_time,title,thumbs,views,tags,sort,status,SUBSTR(content,1,100) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''} LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
     let hasThumbList = await thumbList(user_id)
     hasThumbList = hasThumbList.map(it => it.blog_id)
@@ -31,7 +31,7 @@ class BlogModels {
   }
   async orderList({ page = 1, per_page = 12, ...values }) {
     const { keyword = "", user_id, tags } = values
-    let _sql = `SELECT id,created_time,title,thumbs,views,tags,SUBSTR(content,1,150) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''}ORDER BY sort DESC LIMIT ${(page - 1) * per_page},${(page) * per_page};`
+    let _sql = `SELECT id,created_time,title,thumbs,views,tags,SUBSTR(content,1,150) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} AND status = 1 ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''}ORDER BY sort DESC LIMIT ${(page - 1) * per_page},${(page) * per_page};`
     let res = await query(_sql)
     let hasThumbList = []
     if (user_id) {
@@ -47,10 +47,16 @@ class BlogModels {
     }))
   }
   async update(values, id) {
-    const { title, content, tags } = values
-    const val = { title, content, tags }
+    const { title, content, tags, status } = values
+    let val = { title, content, tags, status: Number(status) }
+    const newVal = {}
+    Object.keys(val).map(it => {
+      if (val[it] || val[it] === 0) {
+        newVal[it] = val[it]
+      }
+    })
     let _sql = `UPDATE blog SET ? WHERE id = ${id}`
-    return await query(_sql, val)
+    return await query(_sql, newVal)
   }
   async detail(id, user_id) {
     let _sql = `SELECT * FROM blog WHERE id = ${id} LIMIT 1`
