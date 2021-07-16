@@ -43,7 +43,7 @@ class BlogModels {
       mysql.where('title', 'like', `%${keyword}%`).orWhere('content', 'like', `%${keyword}%`)
     }
     if (tags) {
-      mysql.whereRaw(`FIND_IN_SET(${tags},'tags')`)
+      mysql.whereRaw(`FIND_IN_SET(${tags},tags)`)
     }
     let res = await mysql
     let hasThumbList = []
