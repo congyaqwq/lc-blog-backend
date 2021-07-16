@@ -45,7 +45,7 @@ class BlogModels {
     if (tags) {
       mysql.whereRaw(`FIND_IN_SET(${tags},'tags')`)
     }
-    let res = await mysql()
+    let res = await mysql
     let hasThumbList = []
     if (user_id) {
       hasThumbList = await thumbList(user_id)
