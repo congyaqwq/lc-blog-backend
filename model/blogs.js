@@ -22,7 +22,7 @@ class BlogModels {
       res.where('title', 'like', `%${keyword}%`).orWhere('content', 'like', `%${keyword}%`)
     }
     if (tags) {
-      res.whereRaw(`FIND_IN_SET(${tags},'tags')`)
+      res.whereRaw(`FIND_IN_SET(${tags},tags)`)
     }
     res = await res
     return await Promise.all(res.map(async it => {

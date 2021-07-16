@@ -16,19 +16,16 @@ class BlogModels {
     }])
   }
   async cancelThumb({ blog_id, user_id }) {
-    let _sql = `DELETE FROM thumb WHERE blog_id = ${blog_id} AND user_id = '${user_id}';`
-    return await query(_sql)
+    return await knex('thumb').where({ blog_id, user_id }).del()
   }
   async thumbList(user_id = '') {
     return await knex('thumb').select('blog_id').where('user_id', user_id)
   }
   async addThumb(id) {
-    let _sql = `UPDATE blog SET thumbs = thumbs+1 WHERE id = ${id}`
-    return await query(_sql)
+    return knex('tags').where({ id }).increment('thumb', 1)
   }
   async subThumb(id) {
-    let _sql = `UPDATE blog SET thumbs = thumbs-1 WHERE id = ${id}`
-    return await query(_sql)
+    return knex('tags').where({ id }).decrement('thumb', 1)
   }
 }
 

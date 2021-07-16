@@ -1,0 +1,1 @@
+rsync -r ./* --exclude=/node_modules/ aliyun:/var/www/koa-node/lc-blog-backend/
