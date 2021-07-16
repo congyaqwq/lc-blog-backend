@@ -1,38 +1,51 @@
-const query = require('../mysql')
 const { thumbList } = require('./thumbs')
 const { listById } = require('./tags')
+const knex = require('../mysql')
 
 class BlogModels {
   async total(values) {
     const { keyword = "" } = values
-    let _sql =
-      !keyword
-        ? `SELECT count(*) AS count FROM blog;`
-        : `SELECT count(*) AS count FROM blog WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%';`
-    return await query(_sql)
+    return knex('blog').count({ 'count': '*' }).where('title', 'like', `%${keyword}%`).orWhere('content', 'like', `%${keyword}%`)
   }
   async add(values) {
-    let _sql = `INSERT INTO blog SET ?;`
-    return await query(_sql, values)
+    return knex('blog').insert([{
+      ...values
+    }])
   }
   async list({ page = 1, per_page = 12, ...values }) {
-    const { keyword = "", user_id, tags } = values
-    let _sql = `SELECT id,created_time,title,thumbs,views,tags,sort,status,SUBSTR(content,1,100) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''} LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-    let res = await query(_sql)
-    let hasThumbList = await thumbList(user_id)
-    hasThumbList = hasThumbList.map(it => it.blog_id)
+    const { keyword = "", tags = '' } = values
+    let res = knex.select('id', "created_time", "title", "thumbs", "views", "tags", "sort", "status", "content")
+      .from('blog')
+      .limit(per_page).offset((page - 1) * per_page)
+
+    if (keyword) {
+      res.where('title', 'like', `%${keyword}%`).orWhere('content', 'like', `%${keyword}%`)
+    }
+    if (tags) {
+      res.whereRaw(`FIND_IN_SET(${tags},tags)`)
+    }
+    res = await res
     return await Promise.all(res.map(async it => {
       return {
         ...it,
-        is_thumb: Number(hasThumbList.includes(it.id)),
-        tags: it.tags ? await listById(it.tags) : ''
+        tags: it.tags ? await listById(it.tags) : '',
+        content: it.content.substr(0, 100)
       }
     }))
   }
   async orderList({ page = 1, per_page = 12, ...values }) {
-    const { keyword = "", user_id, tags } = values
-    let _sql = `SELECT id,created_time,title,thumbs,views,tags,SUBSTR(content,1,150) as content FROM blog ${keyword ? `WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'` : ''} AND status = 1 ${tags ? `${keyword ? 'AND' : 'WHERE'} FIND_IN_SET(${tags},tags)` : ''}ORDER BY sort DESC LIMIT ${(page - 1) * per_page},${(page) * per_page};`
-    let res = await query(_sql)
+    const { keyword = "", user_id, tags = '' } = values
+    let mysql = knex.select('id', "created_time", "title", "thumbs", "views", "tags", "sort", "status", "content")
+      .from('blog')
+      .andWhere('status', '=', '1')
+      .limit(per_page).offset((page - 1) * per_page)
+    if (keyword) {
+      mysql.where('title', 'like', `%${keyword}%`).orWhere('content', 'like', `%${keyword}%`)
+    }
+    if (tags) {
+      mysql.whereRaw(`FIND_IN_SET(${tags},'tags')`)
+    }
+    let res = await mysql()
     let hasThumbList = []
     if (user_id) {
       hasThumbList = await thumbList(user_id)
@@ -42,7 +55,8 @@ class BlogModels {
       return {
         ...it,
         is_thumb: Number(hasThumbList.includes(it.id)),
-        tags: it.tags ? await listById(it.tags) : ''
+        tags: it.tags ? await listById(it.tags) : '',
+        content: it.content.substr(0, 100)
       }
     }))
   }
@@ -55,12 +69,12 @@ class BlogModels {
         newVal[it] = val[it]
       }
     })
-    let _sql = `UPDATE blog SET ? WHERE id = ${id}`
-    return await query(_sql, newVal)
+    return knex('blog').where({ id }).update({
+      ...newVal
+    })
   }
   async detail(id, user_id) {
-    let _sql = `SELECT * FROM blog WHERE id = ${id} LIMIT 1`
-    const res = await query(_sql)
+    const res = await knex('blog').where({ id }).limit(1)
     let hasThumbList = []
     if (user_id) {
       hasThumbList = await thumbList(user_id)
@@ -72,12 +86,10 @@ class BlogModels {
     return data
   }
   async remove(id) {
-    let _sql = `DELETE FROM blog WHERE ?`
-    return await query(_sql, { id })
+    return knex('blog').where({ id }).del()
   }
   async addViews(id) {
-    const _sql = `UPDATE blog SET views=views+1 WHERE ?`
-    return await query(_sql, { id })
+    return knex('blog').where({ id }).increment('views', 1)
   }
 }
 

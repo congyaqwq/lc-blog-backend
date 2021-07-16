@@ -1,6 +1,29 @@
 const mysql = require('mysql')
 const config = require('./config')
 
+const knex = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: config.database.HOST,
+    port: config.database.PORT,
+    user: config.database.USERNAME,
+    password: config.database.PASSWORD,
+    database: config.database.DATABASE
+  },
+  debug: true,
+  pool: { min: 0, max: 7 },
+  log: {
+    debug(message) {
+      console.log(message.sql)
+    },
+  }
+})
+
+module.exports = knex
+
+
+
+
 let pool = mysql.createPool({
   host: config.database.HOST,
   port: config.database.PORT,
@@ -26,5 +49,5 @@ function query(sql, values) {
   })
 }
 
-module.exports = query
+// module.exports = query
 

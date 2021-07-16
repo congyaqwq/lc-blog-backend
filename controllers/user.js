@@ -25,7 +25,7 @@ exports.userDetail = async (ctx) => {
   token = token.split('Bearer')[1].trim()
   const values = jwt.verify(token, privateKey)
   const { id } = values
-  const res = await userInfo({ id })
+  const res = await userInfo(id)
   ctx.body = res[0]
 
 }
