@@ -16,12 +16,16 @@ app.use(bodyParser())
 // app.use(cors({
 //   origin: 'localhost:4000'
 // }))
-// app.use(async (ctx, next) => {
-//   ctx.set('Access-Control-Allow-Credentials', 'true')
-// })
-app.use(cors({
-  origin: '*'
-}))
+app.use(async (ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', ctx.headers.origin)
+  ctx.set('Access-Control-Allow-Headers', 'content-type')
+  ctx.set('Access-Control-Allow-Methods', 'OPTIONS,GET,HEAD,PUT,POST,DELETE,PATCH')
+  ctx.set('Access-Control-Allow-Credentials', 'true')
+  await next()
+})
+// app.use(cors({
+//   origin: config.origin
+// }))
 
 
 
@@ -32,6 +36,7 @@ app.use(async (ctx, next) => {
     await next()
   } catch (err) {
     ctx.status = err.status || err.statusCode || 500
+    console.log(err.message)
     ctx.body = {
       message: err.message
     }

@@ -35,7 +35,7 @@ class BlogModels {
   }
   async orderList({ page = 1, per_page = 12, ...values }) {
     const { keyword = "", user_id, tags = '' } = values
-    let mysql = knex.select('id', "created_time", "title", "thumbs", "views", "tags", "sort", "status", "content")
+    let mysql = knex.select('id', "created_time", "title", "thumbs", "views", "tags", "sort",  "content")
       .from('blog')
       .andWhere('status', '=', '1')
       .limit(per_page).offset((page - 1) * per_page)

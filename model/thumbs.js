@@ -15,17 +15,17 @@ class BlogModels {
       blog_id
     }])
   }
-  async cancelThumb({ blog_id, user_id }) {
+  async cancelThumb({ blog_id='', user_id='' }) {
     return await knex('thumb').where({ blog_id, user_id }).del()
   }
   async thumbList(user_id = '') {
     return await knex('thumb').select('blog_id').where('user_id', user_id)
   }
   async addThumb(id) {
-    return knex('tags').where({ id }).increment('thumb', 1)
+    return knex('blog').where({ id }).increment('thumbs', 1)
   }
   async subThumb(id) {
-    return knex('tags').where({ id }).decrement('thumb', 1)
+    return knex('blog').where({ id }).decrement('thumbs', 1)
   }
 }
 
