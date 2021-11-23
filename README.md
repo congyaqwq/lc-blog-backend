@@ -4,7 +4,7 @@
 blog backend  
 技术栈：koa
 
-### mian 分支:
+### main 分支:
 
 nuxt 后端，使用 cookie 确认用户唯一标识
 
