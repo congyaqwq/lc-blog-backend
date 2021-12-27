@@ -4,19 +4,27 @@ const knex = require('../mysql')
 
 class BlogModels {
   async total(values) {
-    const { keyword = "" } = values;
-    return knex("blog")
+    const { keyword = "", tags='' } = values;
+    let res =  knex("blog")
       .count({ count: "*" })
       .where("title", "like", `%${keyword}%`)
       .orWhere("content", "like", `%${keyword}%`);
+    if (tags) {
+      res.whereRaw(`FIND_IN_SET(${tags},tags)`);
+    }
+    return await res;
   }
   async frontTotal(values) {
-    const { keyword = "" } = values;
-    return knex("blog")
+    const { keyword = "",tags='' } = values;
+    let res =  knex("blog")
       .count({ count: "*" })
       .where(function(){
         this.where("title", "like", `%${keyword}%`).orWhere("content", "like", `%${keyword}%`)
       }).andWhere("status", "=", "1");
+    if (tags) {
+      res.whereRaw(`FIND_IN_SET(${tags},tags)`);
+    }
+    return await res;
   }
   async add(values) {
     return knex("blog").insert([

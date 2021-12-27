@@ -3,7 +3,6 @@ const config = require('./config')
 const router = require("./routes")
 const bodyParser = require('koa-bodyparser')
 const parameter = require('koa-parameter')
-// const cors = require('koa2-cors')
 const session = require("koa-session");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
@@ -25,9 +24,6 @@ app.use(async (ctx, next) => {
   ctx.set("Access-Control-Allow-Credentials", "true");
   await next();
 });
-// app.use(cors({
-//   origin: config.origin
-// }))
 
 app.keys = ["my own blog", "i like it"];
 let cache = {};
@@ -40,7 +36,8 @@ const CONFIG = {
   signed: false /** (boolean) signed or not (default true) */,
   rolling: false /** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false) */,
   renew: false /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/,
-  secure: false /** (boolean) secure cookie*/,
+  secure: process.env.NODE_ENV === 'production'? true: false /** (boolean) secure cookie*/,
+  sameSite: 'None',
   store: {
     set: (key, sess) => {
       cache[key] = sess;
